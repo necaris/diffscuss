@@ -15,7 +15,7 @@ from diffscuss import walker, header, dates
 
 
 def _exit(msg, exit_code):
-    print >> sys.stderr, msg
+    print(msg, file=sys.stderr)
     sys.exit(exit_code)
 
 
@@ -123,7 +123,7 @@ class TopAuthorsExtractor(HeaderExtractor):
     def get(self):
         cnt_auth_tups = [(cnt, auth)
                          for (auth, cnt)
-                         in self.author_counts.items()]
+                         in list(self.author_counts.items())]
         cnt_auth_tups.sort()
         cnt_auth_tups.reverse()
         return ", ".join(["%s (%d)" % (auth, cnt)
@@ -205,5 +205,5 @@ def main(args):
               "with 'diffscuss mailbox make-inbox'" % inbox_path, 2)
     for review in os.listdir(inbox_path):
         if review != '.gitkeep':
-            print _format_listing(os.path.join(inbox_path, review),
-                                  args.emacs, args.short)
+            print(_format_listing(os.path.join(inbox_path, review),
+                                  args.emacs, args.short))

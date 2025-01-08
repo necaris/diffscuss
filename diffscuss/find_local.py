@@ -28,7 +28,7 @@ LocalCandidate = namedtuple('LocalCandidate',
 
 
 def _exit(msg, exit_code):
-    print >> sys.stderr, msg
+    print(msg, file=sys.stderr)
     sys.exit(exit_code)
 
 

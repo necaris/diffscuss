@@ -145,7 +145,7 @@ def test_line_properties():
 
 def _check_line_properties(line, expected_attrs):
     props = editor.LineProperties(line)
-    for attr, value in expected_attrs.iteritems():
+    for attr, value in expected_attrs.items():
         eq_(value, getattr(props, attr))
 
 

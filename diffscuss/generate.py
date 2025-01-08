@@ -129,7 +129,7 @@ def _main(args):
 def main(args):
     try:
         _main(args)
-    except subprocess.CalledProcessError, e:
-        print >> sys.stderr, e
-        print >> sys.stderr, e.output
+    except subprocess.CalledProcessError as e:
+        print(e, file=sys.stderr)
+        print(e.output, file=sys.stderr)
         sys.exit(e.returncode)

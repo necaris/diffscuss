@@ -115,12 +115,13 @@ class LineProperties(object):
 
 ### Comment insertion
 
-def find_header_start(buf, (row, col)):
+def find_header_start(buf, xxx_todo_changeme):
     """
     If the cursor is in a diffscuss comment, returns the row of the start of
     the header for that comment and the current column. Otherwise, returns the
     current row and column.
     """
+    (row, col) = xxx_todo_changeme
     if not LineProperties(buf[row - 1]).is_diffscuss:
         return row, col
 
@@ -136,12 +137,13 @@ def find_header_start(buf, (row, col)):
     return 1, col
 
 
-def find_body_end(buf, (row, col)):
+def find_body_end(buf, xxx_todo_changeme1):
     """
     If the cursor is in a diffscuss comment, returns the row of the end of the
     body for that comment and the current column. Otherwise, returns the
     current row and column.
     """
+    (row, col) = xxx_todo_changeme1
     if not LineProperties(buf[row - 1]).is_diffscuss:
         return row, col
 
@@ -157,12 +159,13 @@ def find_body_end(buf, (row, col)):
     return row, col
 
 
-def find_subthread_end(buf, (row, col)):
+def find_subthread_end(buf, xxx_todo_changeme2):
     """
     If the cursor is in a diffscuss comment, returns the row of the end of the
     comment's subthread and the current column. Otherwise, returns the current
     row and column.
     """
+    (row, col) = xxx_todo_changeme2
     start_line_props = LineProperties(buf[row - 1])
     if not start_line_props.is_diffscuss:
         return row, col
@@ -175,12 +178,13 @@ def find_subthread_end(buf, (row, col)):
     return row, col
 
 
-def find_thread_end(buf, (row, col)):
+def find_thread_end(buf, xxx_todo_changeme3):
     """
     If the cursor is in a diffscuss comment, returns the row of the end of the
     comment's thread and the current column. Otherwise, returns the current row
     and column.
     """
+    (row, col) = xxx_todo_changeme3
     if LineProperties(buf[row - 1]).is_diffscuss:
         for offset, line in enumerate(buf[row:]):
             if not LineProperties(line).is_diffscuss:
@@ -189,11 +193,12 @@ def find_thread_end(buf, (row, col)):
     return row, col
 
 
-def find_range(buf, (row, col)):
+def find_range(buf, xxx_todo_changeme4):
     """
     Returns the row of the next diff range line, if one could be found, and the
     current column. If none was found, returns the current row and column.
     """
+    (row, col) = xxx_todo_changeme4
     for offset, line in enumerate(buf[row - 1:]):
         if LineProperties(line).is_diff_range:
             return row + offset, col
@@ -220,50 +225,54 @@ def make_comment(depth=1):
     return lines
 
 
-def inject_comment(buf, (row, col), depth=1):
+def inject_comment(buf, xxx_todo_changeme5, depth=1):
     """
     Injects a comment of depth `depth` at the current cursor position, and
     returns the position to which the cursor should be moved for editing.
     """
+    (row, col) = xxx_todo_changeme5
     lines = make_comment(depth=depth)
     buf.append(lines, row)
     return (row + len(lines) - 1, len(lines[-2]))
 
 
-def insert_comment(buf, (row, col), depth=1):
+def insert_comment(buf, xxx_todo_changeme6, depth=1):
     """
     Inserts a comment of depth `depth` at the end of the current thread (if
     there is one) or at the current position, and returns the position to which
     the cursor should be moved for editing.
     """
+    (row, col) = xxx_todo_changeme6
     row, col = find_thread_end(buf, (row, col))
     return inject_comment(buf, (row, col), depth=depth)
 
 
-def insert_file_comment(buf, (row, col)):
+def insert_file_comment(buf, xxx_todo_changeme7):
     """
     Inserts a new comment at the top of the file or at the end of the existing
     top-level diffscuss thread, and returns the position to which the cursor
     should be moved for editing.
     """
+    (row, col) = xxx_todo_changeme7
     row, col = 0, 0
     if LineProperties(buf[0]).is_diffscuss:
         row, col = find_thread_end(buf, (row, col))
     return inject_comment(buf, (row, col))
 
 
-def reply_to_comment(buf, (row, col)):
+def reply_to_comment(buf, xxx_todo_changeme8):
     """
     Inserts a new reply to the current diffscuss comment at a depth one greater
     than that comment, and returns the position to which the cursor should be
     moved for editing.
     """
+    (row, col) = xxx_todo_changeme8
     depth = LineProperties(buf[row - 1]).depth
     row, col = find_subthread_end(buf, (row, col))
     return inject_comment(buf, (row, col), depth=depth + 1)
 
 
-def insert_contextual_comment(buf, (row, col)):
+def insert_contextual_comment(buf, xxx_todo_changeme9):
     """
     Inserts a comment based on the current context: file-level if the cursor is
     at the top of the file, a reply if positioned in a diffscuss comment, after
@@ -271,6 +280,7 @@ def insert_contextual_comment(buf, (row, col)):
     if none of the previous conditions were met. Returns the position to which
     the cursor should be moved for editing.
     """
+    (row, col) = xxx_todo_changeme9
     if row == 1:
         return insert_file_comment(buf, (row, col))
 
@@ -286,11 +296,12 @@ def insert_contextual_comment(buf, (row, col)):
 
 ### Showing source
 
-def show_local_source(buf, (row, col)):
+def show_local_source(buf, xxx_todo_changeme10):
     """
     Returns the line number and path of the file corresponding to the change
     under the cursor.
     """
+    (row, col) = xxx_todo_changeme10
     cmd = """
         {diffscuss} find-local -i {buffer_name} {row}
         """.format(diffscuss=_get_script(),
@@ -300,11 +311,12 @@ def show_local_source(buf, (row, col)):
     return '+%s %s' % (line, filename)
 
 
-def show_old_source(buf, (row, col), tempfile):
+def show_old_source(buf, xxx_todo_changeme11, tempfile):
     """
     Writes the old version of the file to the path given by `tempfile`, and
     returns the line number corresponding to the change under the cursor.
     """
+    (row, col) = xxx_todo_changeme11
     return show_source(buf, (row, col), tempfile, {
         'marker': '---',
         'short': '-',
@@ -314,11 +326,12 @@ def show_old_source(buf, (row, col), tempfile):
     })
 
 
-def show_new_source(buf, (row, col), tempfile):
+def show_new_source(buf, xxx_todo_changeme12, tempfile):
     """
     Writes the new version of the file to the path given by `tempfile`, and
     returns the line number corresponding to the change under the cursor.
     """
+    (row, col) = xxx_todo_changeme12
     return show_source(buf, (row, col), tempfile, {
         'marker': '+++',
         'short': '+',
@@ -328,11 +341,12 @@ def show_new_source(buf, (row, col), tempfile):
     })
 
 
-def _get_source_file(buf, (row, col), marker):
+def _get_source_file(buf, xxx_todo_changeme13, marker):
     """
     Returns the source file name from a git diff for a line starting with the
     string `marker`, working backward from the current cursor position.
     """
+    (row, col) = xxx_todo_changeme13
     for line in reversed(buf[:row - 1]):
         if line.startswith(marker):
             match = re.search('\s*(a|b)\/(.*)', line)
@@ -341,12 +355,13 @@ def _get_source_file(buf, (row, col), marker):
     return None
 
 
-def show_source(buf, (row, col), tempfile, conf):
+def show_source(buf, xxx_todo_changeme14, tempfile, conf):
     """
     Writes a version of the file to the path given by `tempfile`, and returns
     the line number corresponding to the change under the cursor, as configured
     by `conf`. (See `show_old_source` and `show_new_source`.)
     """
+    (row, col) = xxx_todo_changeme14
     filename = _get_source_file(buf, (row, col), conf['marker'])
 
     # Skip lines we don't care about (- if showing the new version of the file,
@@ -479,12 +494,13 @@ def mailbox_done(buffer_name, _prompt_func):
 
 ### Navigation
 
-def _find_first(buf, (row, col), predicate, reverse=False):
+def _find_first(buf, xxx_todo_changeme15, predicate, reverse=False):
     """
     Finds the first row for which the predicate (a function called on a single
     line) goes from False to True, moving forward or backward through the file
     according to `reverse`. Returns that row and the current column.
     """
+    (row, col) = xxx_todo_changeme15
     if not reverse:
         skip_gen = enumerate(buf[row:])
     else:
@@ -510,13 +526,14 @@ def _find_first(buf, (row, col), predicate, reverse=False):
     return row, col
 
 
-def _find_last(buf, (row, col), predicate, reverse=False):
+def _find_last(buf, xxx_todo_changeme16, predicate, reverse=False):
     """
     Finds the row for which the predicate (a function called on a single line)
     goes from True to False, moving forward or backward through the file
     according to `reverse`. Returns the row before that row (i.e. the last
     predicate-matching row) and the current column.
     """
+    (row, col) = xxx_todo_changeme16
     if not reverse:
         skip_gen = enumerate(buf[row:])
     else:
@@ -546,73 +563,81 @@ def _find_last(buf, (row, col), predicate, reverse=False):
     return row, col
 
 
-def find_next_comment(buf, (row, col)):
+def find_next_comment(buf, xxx_todo_changeme17):
     """
     Returns the row of the start of the next diffscuss comment, and the current
     column.
     """
+    (row, col) = xxx_todo_changeme17
     predicate = lambda line: LineProperties(line).is_header
     return _find_first(buf, (row, col), predicate, reverse=False)
 
 
-def find_next_comment_end(buf, (row, col)):
+def find_next_comment_end(buf, xxx_todo_changeme18):
     """
     Returns the row of the end of the next diffscuss comment, and the current
     column.
     """
+    (row, col) = xxx_todo_changeme18
     predicate = lambda line: LineProperties(line).is_body
     return _find_last(buf, (row, col), predicate, reverse=False)
 
 
-def find_next_thread(buf, (row, col)):
+def find_next_thread(buf, xxx_todo_changeme19):
     """
     Returns the row of the start of the next diffscuss thread, and the current
     column.
     """
+    (row, col) = xxx_todo_changeme19
     predicate = lambda line: LineProperties(line).is_diffscuss
     return _find_first(buf, (row, col), predicate, reverse=False)
 
 
-def find_next_thread_end(buf, (row, col)):
+def find_next_thread_end(buf, xxx_todo_changeme20):
     """
     Returns the row of the end of the next diffscuss thread, and the current
     column.
     """
+    (row, col) = xxx_todo_changeme20
     predicate = lambda line: LineProperties(line).is_diffscuss
     return _find_last(buf, (row, col), predicate, reverse=False)
 
 
-def find_prev_comment(buf, (row, col)):
+def find_prev_comment(buf, xxx_todo_changeme21):
     """
     Returns the row of the start of the previous diffscuss comment, and the
     current column.
     """
+    (row, col) = xxx_todo_changeme21
     predicate = lambda line: LineProperties(line).is_header
     return _find_last(buf, (row, col), predicate, reverse=True)
 
 
-def find_prev_comment_end(buf, (row, col)):
+def find_prev_comment_end(buf, xxx_todo_changeme22):
     """
     Returns the row of the end of the previous diffscuss comment, and the
     current column.
     """
+    (row, col) = xxx_todo_changeme22
     predicate = lambda line: LineProperties(line).is_body
     return _find_first(buf, (row, col), predicate, reverse=True)
 
 
-def find_prev_thread(buf, (row, col)):
+def find_prev_thread(buf, xxx_todo_changeme23):
     """
     Returns the row of the start of the previous diffscuss thread, and the
     current column.
     """
+    (row, col) = xxx_todo_changeme23
     predicate = lambda line: LineProperties(line).is_diffscuss
     return _find_last(buf, (row, col), predicate, reverse=True)
 
 
-def find_prev_thread_end(buf, (row, col)):
+def find_prev_thread_end(buf, xxx_todo_changeme24):
     """
     Returns the row of the end of the previous diffscuss thread, and the
     current column.
     """
+    (row, col) = xxx_todo_changeme24
     predicate = lambda line: LineProperties(line).is_diffscuss
     return _find_first(buf, (row, col), predicate, reverse=True)

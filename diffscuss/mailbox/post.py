@@ -10,4 +10,4 @@ def main(args):
     review_path = dmb_post(args.file, [args.inbox] + args.inboxes,
                            args.git_exe)
     if args.print_review_path:
-        print review_path
+        print(review_path)

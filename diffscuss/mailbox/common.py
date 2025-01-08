@@ -134,7 +134,7 @@ def dmb_done(diffscuss_fname, inbox, git_exe):
 
 
 def _error(msg):
-    print >> sys.stderr, msg
+    print(msg, file=sys.stderr)
 
 
 def _move_to_reviews_dir(diffscuss_fname, git_exe):

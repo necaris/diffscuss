@@ -2,7 +2,7 @@
 
 import itertools
 import os
-from StringIO import StringIO
+from io import StringIO
 from textwrap import dedent
 
 from nose.tools import eq_, ok_
@@ -21,7 +21,7 @@ def _test_fname(fname):
 
 def _apply_to_template(template_fname, template_defaults, to_apply):
     subs = dict(template_defaults)
-    for (k, v) in to_apply.items():
+    for (k, v) in list(to_apply.items()):
         if k not in ('COMMENT_TOP', 'COMMENT_BOTTOM'):
             # COMMENT_TOP and COMMENT_BOTTOM don't need a leading
             # newline, everything else does, but COMMENT_TOP and
@@ -321,5 +321,5 @@ def _check_walker(template_fname, template_defaults, template_key, comment, temp
 def test_walker():
     for (template_fname, template_defaults, template_parsed, tests) in TEMPLATE_TESTS:
         for (comment, expected) in tests:
-            for template_key in template_defaults.keys():
+            for template_key in list(template_defaults.keys()):
                 yield _check_walker, template_fname, template_defaults, template_key, comment, template_parsed, expected

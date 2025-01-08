@@ -16,7 +16,7 @@ def print_usage():
 
                    Woot.
                    """)
-    print >> sys.stderr, usage
+    print(usage, file=sys.stderr)
 
 
 def _add_gen_subparser(subparsers):

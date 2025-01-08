@@ -14,4 +14,4 @@ def main(args):
     review_path = dmb_post(diffscuss_fname, recipients, args.git_exe)
     dmb_done(diffscuss_fname, args.from_inbox, args.git_exe)
     if args.print_review_path:
-        print review_path
+        print(review_path)

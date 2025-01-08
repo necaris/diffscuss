@@ -26,8 +26,8 @@ For example:
 python diffscuss-notify.py 80 hut8labs.com diffscussions/users/
 """
 from collections import defaultdict
-import BaseHTTPServer
-import SocketServer
+import http.server
+import socketserver
 import cgi
 import json
 import sys
@@ -56,7 +56,7 @@ def notify(addy, repo_name, repo_url, reviews):
     server.quit()
 
 
-class ServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class ServerHandler(http.server.BaseHTTPRequestHandler):
 
     def do_head(self):
         self.do_GET()
@@ -80,15 +80,15 @@ class ServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
         json_payload = form["payload"].value
         payload = json.loads(json_payload)
-        for commit in payload[u"commits"]:
-            for fpath in commit[u"added"]:
+        for commit in payload["commits"]:
+            for fpath in commit["added"]:
                 fpath = fpath.encode('utf-8')
                 if fpath.startswith(diffscuss_user_dir):
                     user, review = os.path.split(
                         fpath[len(diffscuss_user_dir):])
                     folks_with_diffscussions[user].append(review)
 
-        for (user, reviews) in folks_with_diffscussions.items():
+        for (user, reviews) in list(folks_with_diffscussions.items()):
             notify("%s@%s" % (user, domain),
                    payload["repository"]["name"],
                    payload["repository"]["url"],
@@ -107,7 +107,7 @@ if __name__ == '__main__':
 
     Handler = ServerHandler
 
-    httpd = SocketServer.TCPServer(("", port), Handler)
+    httpd = socketserver.TCPServer(("", port), Handler)
 
-    print "serving at port", port
+    print("serving at port", port)
     httpd.serve_forever()

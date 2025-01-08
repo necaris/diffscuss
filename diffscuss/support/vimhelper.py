@@ -46,7 +46,7 @@ def run_mailbox(func):
         vim.command("silent! normal! :bd %s\n" % buffer_name)
         if message:
             vim.command('echom "%s"' % message)
-    except Exception, e:
+    except Exception as e:
         vim.command('echom "%s"' % e)
 
 
@@ -71,7 +71,7 @@ def open_preview(func):
             vim.command("normal! :pedit +%d %s\n" % (lineno, tempfile))
         else:
             vim.command("normal! :pedit %s\n" % tempfile)
-    except Exception, e:
+    except Exception as e:
         vim.command('echom "%s"' % e)
 
 
@@ -89,5 +89,5 @@ def open_file(func):
     try:
         filename = func(win.buffer, win.cursor)
         vim.command("normal! :e %s\n" % filename)
-    except Exception, e:
+    except Exception as e:
         vim.command('echom "%s"' % e)
