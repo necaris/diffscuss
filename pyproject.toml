@@ -8,7 +8,6 @@ packages = [
     'diffscuss.support',
     'diffscuss.mailbox',
 ]
-scripts = ['bin/diffscuss']
 url = 'http://github.com/hut8labs/diffscuss/'
 license = 'LICENSE.txt'
 description = 'Plain-text code review format and tools.'
