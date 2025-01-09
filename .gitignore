@@ -6,3 +6,5 @@ gh-import.log
 gh-import
 build
 localdev
+.direnv
+.envrc
